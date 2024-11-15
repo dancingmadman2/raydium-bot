@@ -54,3 +54,4 @@ WALLET_INDEX=1 yarn dev volume_bot.ts
 ```
 You can run multiple instances and create volume using multiple wallets.
 
+**Use this to create volume for your dead shitcoins in dexscreener** 
