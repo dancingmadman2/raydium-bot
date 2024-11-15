@@ -54,4 +54,13 @@ WALLET_INDEX=1 yarn dev volume_bot.ts
 ```
 You can run multiple instances and create volume using multiple wallets.
 
-**Use this to create volume for your dead shitcoins in dexscreener** 
+### Things to know
+* Make sure to hold both the BASE and the QUOTE token.
+* 1 SOL = 1000000000 lamports.
+* Min and Max amount are in lamports.
+* Priority fee is in microlamports with default settings it is set to 0.0006 SOL.
+* If you get too many failed transactions you could try increasing the priority fee.
+* If you want to actively use the bot don't use the public RPC endpoint.
+
+
+**Now you can have fun creating fake volume for your dead shitcoins in dexscreener.** 
