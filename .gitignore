@@ -1,0 +1,4 @@
+.env
+/src/swap.ts
+/node_modules
+/yarn.lock

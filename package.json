@@ -1,0 +1,28 @@
+{
+  "name": "raydium-sdk-v2-trading-bot",
+  "version": "0.0.1-alpha",
+  "description": "Raydium SDK V2 Trading Bot",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@raydium-io/raydium-sdk-v2": "0.1.73-alpha",
+    "@solana/spl-token": "^0.4.6",
+    "@types/jsonfile": "^6.1.4",
+    "@types/node": "^22.9.0",
+    "bs58": "^5.0.0",
+    "decimal.js": "^10.4.3",
+    "dotenv": "^16.4.5",
+    "jsonfile": "^6.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.5",
+    "npm-check-updates": "^16.14.11"
+  },
+  "scripts": {
+    "start": "node",
+    "build": "tsc",
+    "clean": "tsc --build --clean",
+    "dev": "ts-node"
+  }
+}
