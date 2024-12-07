@@ -29,7 +29,7 @@ https://github.com/raydium-io/raydium-sdk-V2-demo
 #### Wallet and RPC Settings (.env)
 | Parameter | Description | Value |
 |-----------|-------------|---------|
-| WALLET_INDEX | Index of the wallet to use from your private keys | 0 |
+| WALLET_INDEX | Index of the wallet to use from your private keys. You dont need to touch this, look at the usage below. | 0 |
 | PRIVATE_KEY_X | Private key in base58 string format | yourSolWalletsPrivateKeyString |
 | RPC_ENDPOINT | Your RPC endpoint URL, will default to public endpoint change  it to a dedicated private endpoint | https://api.mainnet-beta.solana.com |
 
