@@ -24,25 +24,46 @@ https://github.com/raydium-io/raydium-sdk-V2-demo
     yarn install
 
 3. Setup your environment
-    ```
-    WALLET_INDEX=0 (default)
+    ```ini
+    WALLET_INDEX=0
     PRIVATE_KEY_0=yourSolWalletsPrivateKeyString
     PRIVATE_KEY_1=yourSolWalletsPrivateKeyString
     PRIVATE_KEY_2=yourSolWalletsPrivateKeyString
+    RPC_ENDPOINT=https://summer-omniscient-gadget.solana-mainnet.quiknode.pro/apiKey
 
-4. Configure setup.ts
-    ```typescript
-    export const CONFIG = {
-    poolId: '4AZRPNEfCJ7iw28rJu5aUyeQhYcvdcNm8cswyL51AY9i', // (default: SOL/Pnut) change to any CPMM pool you want
-    minAmount: 1000000, // Minimum amount for a trade (default: 0.0.001 SOL)
-    maxAmount: 5000000, // Maximum amount for a trade (default: 0.005 SOL)
-    timeInterval: 90, // Time interval between trades in seconds (default: 90 seconds) To lower time interval i suggest using third party RPC endpoints
-    buySellRatio: 0.5, // Ratio for deciding buy/sell (e.g., 0.7 for 70% more likely to buy than sell)
-    slippage: 0.1, // (default: 0.1%)
-    compute: 60000, // (default: 6000)
-    priorityFee: 10000000, // Increase, if transactions fail even though simulations succeed (default: 10000000 microlamports)
-    connection: 'https://api.mainnet-beta.solana.com' // (default: cluster('mainnet-beta') RPC endpoint, i suggest using third party endpoints for more consistent transactions (e.g., quicknode, alchemy etc...)
-    };
+### Configuration
+
+Copy `.env.config.example` to `.env.config` and adjust the parameters below:
+
+| Parameter | Description | Value |
+|-----------|-------------|---------|
+| POOL_ID | Raydium CPMM pool ID for trading | AQJVhQXcZqXRCv2w6GHjsVFBm52NY2Wa9YmAQTNYdTaU |
+| MIN_AMOUNT | Minimum trade amount in lamports (1 SOL = 1,000,000,000 lamports) | 5000000 (0.005 SOL) |
+| MAX_AMOUNT | Maximum trade amount in lamports | 10000000 (0.01 SOL) |
+| TIME_INTERVAL | Time between trades in seconds. Lower intervals require better RPC endpoints | 15 |
+| BUY_SELL_RATIO | Probability ratio for buy vs sell (0.6 = 60% buy, 40% sell) | 0.6 |
+| SLIPPAGE | Maximum allowed slippage percentage | 0.1 |
+| COMPUTE | Compute units limit for transactions | 60000 |
+| PRIORITY_FEE | Priority fee in microlamports. Increase if transactions fail | 11000000 |
+
+Example `.env.config`:
+```ini
+# Raydium CPMM pool ID for trading pair
+POOL_ID=AQJVhQXcZqXRCv2w6GHjsVFBm52NY2Wa9YmAQTNYdTaU
+
+# Trade amount limits in lamports (1 SOL = 1,000,000,000 lamports)
+MIN_AMOUNT=5000000  # 0.005 SOL
+MAX_AMOUNT=10000000 # 0.01 SOL
+
+# Trading interval and strategy
+TIME_INTERVAL=15 
+BUY_SELL_RATIO=0.6 
+
+# Transaction parameters
+SLIPPAGE=0.1
+COMPUTE=60000
+PRIORITY_FEE=11000000
+```
   
 ### Usage
 

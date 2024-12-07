@@ -1,4 +1,5 @@
 .env
+.env.config
 /src/swap.ts
 /node_modules
 /yarn.lock
