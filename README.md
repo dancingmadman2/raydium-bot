@@ -22,22 +22,30 @@ https://github.com/raydium-io/raydium-sdk-V2-demo
 
     ```bash
     yarn install
-
-3. Setup your environment
-    ```ini
-    WALLET_INDEX=0
-    PRIVATE_KEY_0=yourSolWalletsPrivateKeyString
-    PRIVATE_KEY_1=yourSolWalletsPrivateKeyString
-    PRIVATE_KEY_2=yourSolWalletsPrivateKeyString
-    RPC_ENDPOINT=https://summer-omniscient-gadget.solana-mainnet.quiknode.pro/apiKey
+    ```
 
 ### Configuration
 
-Copy `.env.config.example` to `.env.config` and adjust the parameters below:
-
+#### Wallet and RPC Settings (.env)
 | Parameter | Description | Value |
 |-----------|-------------|---------|
-| POOL_ID | Raydium CPMM pool ID for trading | AQJVhQXcZqXRCv2w6GHjsVFBm52NY2Wa9YmAQTNYdTaU |
+| WALLET_INDEX | Index of the wallet to use from your private keys | 0 |
+| PRIVATE_KEY_X | Private key in base58 string format | yourSolWalletsPrivateKeyString |
+| RPC_ENDPOINT | Your RPC endpoint URL, will default to public endpoint change  it to a dedicated private endpoint | https://api.mainnet-beta.solana.com |
+
+Example `.env`:
+```ini
+WALLET_INDEX=0
+PRIVATE_KEY_0=yourSolWalletsPrivateKeyString
+PRIVATE_KEY_1=yourSolWalletsPrivateKeyString
+PRIVATE_KEY_2=yourSolWalletsPrivateKeyString
+RPC_ENDPOINT=https://summer-omniscient-gadget.solana-mainnet.quiknode.pro/apiKey
+```
+
+#### Trading parameters (.env.config)
+| Parameter | Description | Value |
+|-----------|-------------|---------|
+| POOL_ID | Raydium CPMM pool ID for trading | 93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu |
 | MIN_AMOUNT | Minimum trade amount in lamports (1 SOL = 1,000,000,000 lamports) | 5000000 (0.005 SOL) |
 | MAX_AMOUNT | Maximum trade amount in lamports | 10000000 (0.01 SOL) |
 | TIME_INTERVAL | Time between trades in seconds. Lower intervals require better RPC endpoints | 15 |
@@ -46,20 +54,14 @@ Copy `.env.config.example` to `.env.config` and adjust the parameters below:
 | COMPUTE | Compute units limit for transactions | 60000 |
 | PRIORITY_FEE | Priority fee in microlamports. Increase if transactions fail | 11000000 |
 
+
 Example `.env.config`:
 ```ini
-# Raydium CPMM pool ID for trading pair
-POOL_ID=AQJVhQXcZqXRCv2w6GHjsVFBm52NY2Wa9YmAQTNYdTaU
-
-# Trade amount limits in lamports (1 SOL = 1,000,000,000 lamports)
+POOL_ID=93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu
 MIN_AMOUNT=5000000  # 0.005 SOL
 MAX_AMOUNT=10000000 # 0.01 SOL
-
-# Trading interval and strategy
 TIME_INTERVAL=15 
 BUY_SELL_RATIO=0.6 
-
-# Transaction parameters
 SLIPPAGE=0.1
 COMPUTE=60000
 PRIORITY_FEE=11000000
