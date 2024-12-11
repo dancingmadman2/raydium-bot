@@ -51,8 +51,8 @@ RPC_ENDPOINT=https://summer-omniscient-gadget.solana-mainnet.quiknode.pro/apiKey
 | TIME_INTERVAL | Time between trades in seconds. Lower intervals require better RPC endpoints | 15 |
 | BUY_SELL_RATIO | Probability ratio for buy vs sell (0.6 = 60% buy, 40% sell) | 0.6 |
 | SLIPPAGE | Maximum allowed slippage percentage | 0.1 |
-| COMPUTE | Compute units limit for transactions | 60000 |
-| PRIORITY_FEE | Priority fee in microlamports. Increase if transactions fail | 11000000 |
+| COMPUTE | Compute units limit for transactions | 120000 |
+| PRIORITY_FEE | Priority fee in microlamports. Increase if transactions keep failing | 100000 |
 
 
 Example `.env.config`:
@@ -63,8 +63,8 @@ MAX_AMOUNT=10000000 # 0.01 SOL
 TIME_INTERVAL=15 
 BUY_SELL_RATIO=0.6 
 SLIPPAGE=0.1
-COMPUTE=60000
-PRIORITY_FEE=11000000
+COMPUTE=120000
+PRIORITY_FEE=100000
 ```
   
 ### Usage
@@ -81,7 +81,7 @@ You can run multiple instances and create volume using multiple wallets.
 * Make sure to hold both the BASE and the QUOTE token.
 * 1 SOL = 1000000000 lamports.
 * Min and Max amount are in lamports.
-* Priority fee is in microlamports with default settings it is set to 0.0006 SOL.
+* Priority fee is in microlamports with default settings it is set to 0.000006 SOL.
 * If you get too many failed transactions you could try increasing the priority fee.
 * If you want to actively use the bot don't use the public RPC endpoint.
 
