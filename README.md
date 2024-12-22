@@ -48,7 +48,7 @@ RPC_ENDPOINT=https://summer-omniscient-gadget.solana-mainnet.quiknode.pro/apiKey
 | POOL_ID | Raydium CPMM pool ID for trading | 93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu |
 | TOKEN_MINT | Mint address of the quote token | Df6yfrKC8kZE3KNkrHERKzAetSxbrWeniQfyJY4Jpump |
 | TARGET_VOLUME | The volume you want to achieve in SOL.  | 0.1 |
-| BASE_TRADE_PERCENTAGE | Percentage of the account to use in one trade| 0.5(50%) |
+| BASE_TRADE_PERCENTAGE | Percentage of the account to use in one trade| 0.5 |
 | TIME_INTERVAL | Time between trades in seconds. Lower intervals require better RPC endpoints | 15 |
 | SLIPPAGE | Maximum allowed slippage percentage | 0.1 |
 | COMPUTE | Compute units limit for transactions | 120000 |
