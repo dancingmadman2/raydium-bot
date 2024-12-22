@@ -88,6 +88,20 @@ Priority Fee: 100000 microlamports
 ✅ Transaction completed: https://explorer.solana.com/tx/signature
 
 📊 Volume Progress: 0.0880 / 2.0000 SOL (4.40%)
+
+-----------------------------------------------------
+
+Target volume of 0.0500 SOL has been achieved! 🎯
+
+📈 Trading Statistics:
+Buy Volume: 0.0273 SOL (1 trade)
+Sell Volume: 0.0319 SOL (1 trade)
+Buy/Sell Ratio: 1.17
+
+
+💰 Balance Changes:
+SOL: +0.0046 SOL
+Token: -31574092420809
 ```
 
 ### Things to know

@@ -12,9 +12,9 @@ import { CONFIG } from './src/setup';
 
 class TradingBot {
   private static readonly LAMPORTS_PER_SOL = 1e9;
-  private static readonly TARGET_VOLUME = CONFIG.targetVolume* TradingBot.LAMPORTS_PER_SOL;
+  private static readonly TARGET_VOLUME = CONFIG.targetVolume * TradingBot.LAMPORTS_PER_SOL; 
   private static readonly BASE_TRADE_PERCENTAGE = CONFIG.baseTradePercentage; 
-  private static readonly TRADE_PERCENTAGE_VARIANCE = 0.1
+  private static readonly TRADE_PERCENTAGE_VARIANCE = 0.1; 
   private static readonly MIN_TRADE_AMOUNT = 0.0005 * TradingBot.LAMPORTS_PER_SOL; 
   private static readonly THRESHOLD_SOL_BALANCE = 0.02 * TradingBot.LAMPORTS_PER_SOL; 
 
@@ -23,7 +23,7 @@ class TradingBot {
   private startBalance: number | null = null;
   private isRunning = false;
   private intervalId: NodeJS.Timeout | null = null;
-  private executingTrade = false; 
+  private executingTrade = false;
 
   constructor() {
     this.volumeTracker = new VolumeTracker(TradingBot.TARGET_VOLUME);
@@ -128,11 +128,17 @@ class TradingBot {
           const postTradeSolBalance = await getSolBalance();
           const volumeChange = Math.abs(postTradeSolBalance - preTradeSolBalance);
           if (volumeChange > 0) {
-            const targetReached = this.volumeTracker.addVolume(volumeChange);
+            const targetReached = this.volumeTracker.addVolume(volumeChange, buy);
             Logger.logVolume(this.volumeTracker.getAccumulatedVolume(), TradingBot.TARGET_VOLUME);
             
             if (targetReached) {
+              const stats = this.volumeTracker.getStats();
+              const changes = await this.volumeTracker.getBalanceChanges();
+              
               Logger.logSuccess(`Target volume of ${(TradingBot.TARGET_VOLUME / 1e9).toFixed(4)} SOL has been achieved! 🎯`);
+              Logger.logVolumeStats(stats);
+              Logger.logBalanceChanges(changes);
+              
               this.stop();
               process.exit(0);
             }
@@ -166,6 +172,7 @@ class TradingBot {
 
       if (!this.startBalance) {
         this.startBalance = solBalance;
+        this.volumeTracker.setStartBalances(solBalance, tokenBalance);
       }
 
       const buy = solBalance >= TradingBot.THRESHOLD_SOL_BALANCE && 
@@ -205,13 +212,40 @@ class TradingBot {
 
 class VolumeTracker {
   private accumulatedVolume: number;
+  private buyVolume: number;
+  private sellVolume: number;
+  private buyTrades: number;
+  private sellTrades: number;
+  private startSolBalance: number;
+  private startTokenBalance: number;
   
   constructor(private targetVolume: number) {
     this.accumulatedVolume = 0;
+    this.buyVolume = 0;
+    this.sellVolume = 0;
+    this.buyTrades = 0;
+    this.sellTrades = 0;
+    this.startSolBalance = 0;
+    this.startTokenBalance = 0;
   }
 
-  public addVolume(amount: string | number): boolean {
-    this.accumulatedVolume += Number(amount);
+  public setStartBalances(solBalance: number, tokenBalance: number): void {
+    this.startSolBalance = solBalance;
+    this.startTokenBalance = tokenBalance;
+  }
+
+  public addVolume(amount: string | number, isBuy: boolean): boolean {
+    const volumeAmount = Number(amount);
+    this.accumulatedVolume += volumeAmount;
+    
+    if (isBuy) {
+      this.buyVolume += volumeAmount;
+      this.buyTrades++;
+    } else {
+      this.sellVolume += volumeAmount;
+      this.sellTrades++;
+    }
+    
     return this.accumulatedVolume >= this.targetVolume;
   }
 
@@ -221,6 +255,33 @@ class VolumeTracker {
 
   public getAccumulatedVolume(): number {
     return this.accumulatedVolume;
+  }
+
+  public getStats(): {
+    buyVolume: number;
+    sellVolume: number;
+    buyTrades: number;
+    sellTrades: number;
+  } {
+    return {
+      buyVolume: this.buyVolume,
+      sellVolume: this.sellVolume,
+      buyTrades: this.buyTrades,
+      sellTrades: this.sellTrades
+    };
+  }
+
+  public async getBalanceChanges(): Promise<{
+    solChange: number;
+    tokenChange: number;
+  }> {
+    const currentSolBalance = await getSolBalance();
+    const currentTokenBalance = await getTokenBalance();
+    
+    return {
+      solChange: currentSolBalance - this.startSolBalance,
+      tokenChange: currentTokenBalance - this.startTokenBalance
+    };
   }
 
   public hasReachedTarget(): boolean {
@@ -277,6 +338,30 @@ class Logger {
     const targetInSol = target / 1e9;
     const percentage = (current / target) * 100;
     console.log(`📊 Volume Progress: ${currentInSol.toFixed(4)} / ${targetInSol.toFixed(4)} SOL (${percentage.toFixed(2)}%)\n`);
+  }
+
+  static logVolumeStats(stats: {
+    buyVolume: number;
+    sellVolume: number;
+    buyTrades: number;
+    sellTrades: number;
+  }): void {
+    console.log('\n📈 Trading Statistics:');
+    console.log(`Buy Volume: ${(stats.buyVolume / 1e9).toFixed(4)} SOL (${stats.buyTrades} trades)`);
+    console.log(`Sell Volume: ${(stats.sellVolume / 1e9).toFixed(4)} SOL (${stats.sellTrades} trades)`);
+    const volumeRatio = stats.buyVolume > 0 ? stats.sellVolume / stats.buyVolume : 0;
+    console.log(`Buy/Sell Ratio: ${volumeRatio.toFixed(2)}\n`);
+  }
+
+  static logBalanceChanges(changes: {
+    solChange: number;
+    tokenChange: number;
+  }): void {
+    console.log('💰 Balance Changes:');
+    const solChangeFormatted = changes.solChange > 0 ? `+${(changes.solChange / 1e9).toFixed(4)}` : (changes.solChange / 1e9).toFixed(4);
+    const tokenChangeFormatted = changes.tokenChange > 0 ? `+${changes.tokenChange}` : changes.tokenChange.toString();
+    console.log(`SOL: ${solChangeFormatted} SOL`);
+    console.log(`Token: ${tokenChangeFormatted}\n`);
   }
 
   static logTransaction(txId: string): void {
