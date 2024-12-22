@@ -46,10 +46,10 @@ RPC_ENDPOINT=https://summer-omniscient-gadget.solana-mainnet.quiknode.pro/apiKey
 | Parameter | Description | Value |
 |-----------|-------------|---------|
 | POOL_ID | Raydium CPMM pool ID for trading | 93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu |
-| MIN_AMOUNT | Minimum trade amount in lamports (1 SOL = 1,000,000,000 lamports) | 5000000 (0.005 SOL) |
-| MAX_AMOUNT | Maximum trade amount in lamports | 10000000 (0.01 SOL) |
+| TOKEN_MINT | Mint address of the quote token | Df6yfrKC8kZE3KNkrHERKzAetSxbrWeniQfyJY4Jpump |
+| TARGET_VOLUME | The volume you want to achieve in SOL.  | 0.1 |
+| BASE_TRADE_PERCENTAGE | Percentage of the account to use in one trade| 0.5(50%) |
 | TIME_INTERVAL | Time between trades in seconds. Lower intervals require better RPC endpoints | 15 |
-| BUY_SELL_RATIO | Probability ratio for buy vs sell (0.6 = 60% buy, 40% sell) | 0.6 |
 | SLIPPAGE | Maximum allowed slippage percentage | 0.1 |
 | COMPUTE | Compute units limit for transactions | 120000 |
 | PRIORITY_FEE | Priority fee in microlamports. Increase if transactions keep failing | 100000 |
@@ -58,11 +58,11 @@ RPC_ENDPOINT=https://summer-omniscient-gadget.solana-mainnet.quiknode.pro/apiKey
 Example `.env.config`:
 ```ini
 POOL_ID=93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu
-MIN_AMOUNT=5000000  # 0.005 SOL
-MAX_AMOUNT=10000000 # 0.01 SOL
+TOKEN_MINT=Df6yfrKC8kZE3KNkrHERKzAetSxbrWeniQfyJY4Jpump # mint address of the quote token
+TARGET_VOLUME=0.1 # in sol 
+BASE_TRADE_PERCENTAGE=0.5 # percentage of account to use in one trade
 TIME_INTERVAL=15 
-BUY_SELL_RATIO=0.6 
-SLIPPAGE=0.1
+SLIPPAGE=0.01
 COMPUTE=120000
 PRIORITY_FEE=100000
 ```
@@ -77,13 +77,26 @@ WALLET_INDEX=1 yarn dev volume_bot.ts
 ```
 You can run multiple instances and create volume using multiple wallets.
 
+### Example Output
+```bash
+🔄 BUYING
+Amount: 0.0367 SOL
+SOL Balance: 0.0598 SOL
+Token Balance: 41483843214175
+Priority Fee: 100000 microlamports
+
+✅ Transaction completed: https://explorer.solana.com/tx/signature
+
+📊 Volume Progress: 0.0880 / 2.0000 SOL (4.40%)
+```
+
 ### Things to know
 * Make sure to hold both the BASE and the QUOTE token.
 * 1 SOL = 1000000000 lamports.
 * Min and Max amount are in lamports.
-* Priority fee is in microlamports with default settings it is set to 0.000006 SOL.
+* Priority fee is in microlamports with default settings it is set to 100000(~0.000012 SOL).
 * If you get too many failed transactions you could try increasing the priority fee.
 * If you want to actively use the bot don't use the public RPC endpoint.
 
 
-**Now you can have fun creating fake volume for your dead shitcoins in dexscreener.** 
+**Now you can have fun creating fake volume for your dead shitcoins.** 

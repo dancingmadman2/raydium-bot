@@ -4,6 +4,7 @@ import { TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import bs58 from 'bs58'
 import * as dotenv from 'dotenv';
 import { CONFIG } from './setup'; 
+import { fetchTokenBalance } from './fetchTokenBalance';
 
 dotenv.config();
 
@@ -24,17 +25,30 @@ console.log(`Selected wallet: ${selectedWallet.publicKey.toBase58()}`);
 
 export const connection = new Connection(CONFIG.connection) 
 
+
+export const getSolBalance = async() =>{
+
+  return await connection.getBalance(selectedWallet.publicKey)
+}
+
+export const getTokenBalance = async() => {
+  return await fetchTokenBalance(selectedWallet.publicKey,CONFIG.tokenMint);
+}
+
 export const txVersion = TxVersion.V0 // or TxVersion.LEGACY
 const cluster = 'mainnet' // 'mainnet' | 'devnet'
 
 let raydium: Raydium | undefined
 export const initSdk = async (params?: { loadToken?: boolean}) => {
+
   if (raydium) return raydium 
   if (connection.rpcEndpoint === clusterApiUrl('mainnet-beta'))
     console.warn('using free rpc node might cause unexpected error, strongly suggest uses paid rpc node')
   console.log(`connect to rpc ${connection.rpcEndpoint} in ${cluster}`)
 
   console.log(`Initializing Raydium SDK with wallet: ${selectedWallet.publicKey.toBase58()}`);
+
+
 
   raydium = await Raydium.load({
     owner: selectedWallet,

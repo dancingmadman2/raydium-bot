@@ -3,3 +3,7 @@
 /src/swap.ts
 /node_modules
 /yarn.lock
+/runner.ts
+/run-bots.sh
+.DS_Store
+.DS_Store
