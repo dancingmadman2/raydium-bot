@@ -7,8 +7,8 @@ export class BotConfig {
   public readonly buyAmount: { min: number; max: number };
   public readonly amountVariance: number = 0.05;
   public readonly minTradeAmount: number;
-  public readonly recentTradesToTrack: number = 5;
-  public readonly volumeImbalanceWeight: number = 0.39;
+  public readonly recentTradesToTrack: number = 10;
+  public readonly volumeImbalanceWeight: number = 0.6;
   public readonly thresholdSolBalance: number;
   public readonly targetSolBalance: number;
   public readonly sweepMode: boolean;
@@ -32,13 +32,13 @@ export class BotConfig {
     this.minTradeAmount = 0.0005 * BotConfig.LAMPORTS_PER_SOL;
     
     this.thresholdSolBalance = Math.max(
-      this.buyAmount.min * 0.5,
-      0.05 * BotConfig.LAMPORTS_PER_SOL
+      this.buyAmount.min * 0.3,
+      0.03 * BotConfig.LAMPORTS_PER_SOL
     );
     
     this.targetSolBalance = Math.max(
-      this.buyAmount.max * 1.5,
-      0.1 * BotConfig.LAMPORTS_PER_SOL
+      this.buyAmount.max * 1.2,
+      0.08 * BotConfig.LAMPORTS_PER_SOL
     );
 
     this.sweepMode = CONFIG.sweepMode;

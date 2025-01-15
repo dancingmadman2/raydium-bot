@@ -73,10 +73,8 @@ export const rpcManager = new RpcManager();
 class WalletManager {
   private wallets: Keypair[] = [];
   private currentIndex: number = 0;
-  private lastUsed: Map<string, number> = new Map();
-  private consecutiveUses: Map<string, number> = new Map();
-  private static readonly COOLDOWN_MS = 2000
-  private static readonly MAX_CONSECUTIVE_USES = 2;
+  private totalUsages: Map<string, number> = new Map();
+  private static readonly MIN_SELECTION_WEIGHT = 0.1;
 
   constructor() {
     this.loadWallets();
@@ -87,8 +85,7 @@ class WalletManager {
     this.currentIndex = Math.floor(Math.random() * this.wallets.length);
     this.wallets.forEach(wallet => {
       const pubkey = wallet.publicKey.toBase58();
-      this.lastUsed.set(pubkey, 0);
-      this.consecutiveUses.set(pubkey, 0);
+      this.totalUsages.set(pubkey, 0);
     });
     console.log(`Loaded ${this.wallets.length} wallets for trading`);
   }
@@ -101,8 +98,7 @@ class WalletManager {
         const keyBytes = this.parsePrivateKey(privateKey);
         const wallet = Keypair.fromSecretKey(keyBytes);
         this.wallets.push(wallet);
-        this.lastUsed.set(wallet.publicKey.toBase58(), 0);
-        this.consecutiveUses.set(wallet.publicKey.toBase58(), 0);
+        this.totalUsages.set(wallet.publicKey.toBase58(), 0);
         console.log(`Loaded wallet ${walletIndex}: ${wallet.publicKey.toBase58()}`);
       } catch (error: any) {
         console.warn(`Failed to load wallet ${walletIndex}: ${error?.message || 'Unknown error'}`);
@@ -124,55 +120,40 @@ class WalletManager {
   }
 
   public async getOptimalWallet(sweepMode: boolean = false): Promise<Keypair> {
-    const now = Date.now();
-
-  
-    for (const [pubkey, lastUsedTime] of this.lastUsed.entries()) {
-      if (now - lastUsedTime > WalletManager.COOLDOWN_MS * 2) {
-        this.consecutiveUses.set(pubkey, 0);
-      }
-    }
-
-  
     if (sweepMode) {
-  
       const wallet = this.wallets[this.currentIndex];
       this.currentIndex = (this.currentIndex + 1) % this.wallets.length;
       return wallet;
     }
 
-    const availableWallets = this.wallets.filter(wallet => {
-      const pubkey = wallet.publicKey.toBase58();
-      const lastUsed = this.lastUsed.get(pubkey) ?? 0;
-      const consecutiveUses = this.consecutiveUses.get(pubkey) ?? 0;
-      return now - lastUsed >= WalletManager.COOLDOWN_MS && 
-             consecutiveUses < WalletManager.MAX_CONSECUTIVE_USES;
-    });
-
-    if (availableWallets.length === 0) {
-      let bestWallet = this.wallets[0];
-      let minLastUsed = this.lastUsed.get(bestWallet.publicKey.toBase58())!;
-
-      for (const wallet of this.wallets) {
-        const lastUsed = this.lastUsed.get(wallet.publicKey.toBase58())!;
-        if (lastUsed < minLastUsed) {
-          minLastUsed = lastUsed;
-          bestWallet = wallet;
-        }
-      }
-
-      this.consecutiveUses.set(bestWallet.publicKey.toBase58(), 1);
-      this.lastUsed.set(bestWallet.publicKey.toBase58(), now);
-      return bestWallet;
+    // Get min and max usage counts to normalize weights
+    let minUsage = Infinity;
+    let maxUsage = 0;
+    for (const usage of this.totalUsages.values()) {
+      minUsage = Math.min(minUsage, usage);
+      maxUsage = Math.max(maxUsage, usage);
     }
 
-    const weightedWallets = availableWallets.map(wallet => {
-      const pubkey = wallet.publicKey.toBase58();
-      const timeSinceLastUse = now - (this.lastUsed.get(pubkey) ?? 0);
-      const weight = Math.min(timeSinceLastUse / WalletManager.COOLDOWN_MS, 5);
+    // If all wallets have same usage, give them equal weights
+    if (minUsage === maxUsage) {
+      const randomIndex = Math.floor(Math.random() * this.wallets.length);
+      const selectedWallet = this.wallets[randomIndex];
+      this.totalUsages.set(selectedWallet.publicKey.toBase58(), 
+        (this.totalUsages.get(selectedWallet.publicKey.toBase58()) ?? 0) + 1);
+      return selectedWallet;
+    }
+
+    // Calculate inverse probability weights
+    const usageRange = maxUsage - minUsage;
+    const weightedWallets = this.wallets.map(wallet => {
+      const usage = this.totalUsages.get(wallet.publicKey.toBase58()) ?? 0;
+      // Normalize usage to 0-1 range and invert it
+      const normalizedUsage = (usage - minUsage) / usageRange;
+      const weight = Math.max(1 - normalizedUsage, WalletManager.MIN_SELECTION_WEIGHT);
       return { wallet, weight };
     });
 
+    // Select wallet using weighted random selection
     const totalWeight = weightedWallets.reduce((sum, { weight }) => sum + weight, 0);
     let random = Math.random() * totalWeight;
     
@@ -185,16 +166,9 @@ class WalletManager {
       }
     }
 
+    // Increment usage count for selected wallet
     const selectedPubkey = selectedWallet.publicKey.toBase58();
-    this.lastUsed.set(selectedPubkey, now);
-    this.consecutiveUses.set(selectedPubkey, (this.consecutiveUses.get(selectedPubkey) ?? 0) + 1);
-
-    for (const wallet of this.wallets) {
-      const pubkey = wallet.publicKey.toBase58();
-      if (pubkey !== selectedPubkey) {
-        this.consecutiveUses.set(pubkey, 0);
-      }
-    }
+    this.totalUsages.set(selectedPubkey, (this.totalUsages.get(selectedPubkey) ?? 0) + 1);
 
     return selectedWallet;
   }
