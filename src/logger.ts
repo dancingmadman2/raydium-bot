@@ -156,7 +156,7 @@ export class Logger {
     console.log('├──────────────────────────────────────────────────────────────────────┤');
     
     console.log(
-      `│ TOTALS          │` +
+      `│ TOTAL          │` +
       ` ${Logger.formatSol(totalBuyVol).padStart(6)} │` +
       ` ${Logger.formatSol(totalSellVol).padStart(6)} │` +
       ` ${totalTrades.toString().padStart(8)} │` +
