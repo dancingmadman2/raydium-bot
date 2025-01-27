@@ -2,7 +2,8 @@ import {
   ApiV3PoolInfoStandardItemCpmm, 
   CpmmKeys, 
   CpmmRpcData, 
-  CurveCalculator 
+  CurveCalculator,
+  TxVersion
 } from '@raydium-io/raydium-sdk-v2';
 import { Keypair } from '@solana/web3.js';
 import { NATIVE_MINT } from '@solana/spl-token';
@@ -15,7 +16,11 @@ import { PriorityFeeManager } from './priorityFeeManager';
 import { getSolBalance, getTokenBalance } from './config';
 
 export class TradeExecutor {
-  constructor(private feeManager: PriorityFeeManager) {}
+  private feeManager: PriorityFeeManager;
+
+  constructor(feeManager: PriorityFeeManager) {
+    this.feeManager = feeManager;
+  }
 
   public async executeSwap(
     wallet: Keypair,
@@ -88,6 +93,7 @@ export class TradeExecutor {
           units: CONFIG.compute,
           microLamports: this.feeManager.getCurrentFee(),
         },
+        txVersion: TxVersion.V0,
       });
 
       console.log('🔄 Processing transaction...');
