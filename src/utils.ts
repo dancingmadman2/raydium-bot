@@ -1,8 +1,7 @@
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 import { CONFIG } from './setup';
 import { getAssociatedTokenAddress, getMint } from '@solana/spl-token';
-import { CREATE_CPMM_POOL_PROGRAM, DEV_CREATE_CPMM_POOL_PROGRAM } from '@raydium-io/raydium-sdk-v2';
-
+import { CREATE_CPMM_POOL_PROGRAM, DEV_CREATE_CPMM_POOL_PROGRAM, AMM_V4, AMM_STABLE, DEVNET_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2';
 
 export function isValidCpmm(programId: string): boolean {
   const validProgramIds = [
@@ -10,6 +9,16 @@ export function isValidCpmm(programId: string): boolean {
     'CPMMGL5yxA8Sf5AjwrqhXUJgvqUAMGgjZihWvGwKgGf4',  // Legacy CPMM program
     CREATE_CPMM_POOL_PROGRAM.toBase58(),              // SDK CPMM program
     DEV_CREATE_CPMM_POOL_PROGRAM.toBase58()          // SDK dev CPMM program
+  ];
+  return validProgramIds.includes(programId);
+}
+
+export function isValidAmm(programId: string): boolean {
+  const validProgramIds = [
+    AMM_V4.toBase58(),
+    AMM_STABLE.toBase58(),
+    DEVNET_PROGRAM_ID.AmmV4.toBase58(),
+    DEVNET_PROGRAM_ID.AmmStable.toBase58()
   ];
   return validProgramIds.includes(programId);
 }

@@ -1,7 +1,5 @@
 export class PriorityFeeManager {
   private static readonly FEE_INCREASE = 25000;
-  private static readonly MAX_FEE = 200000;
-  private static readonly MIN_FEE = 10000;
   private static readonly VARIANCE_BELOW = 0.05;
   private static readonly VARIANCE_ABOVE = 0.10;
   
@@ -9,7 +7,7 @@ export class PriorityFeeManager {
   private consecutiveFailures: number = 0;
 
   constructor(initialFee: number) {
-    this.baseFee = Math.max(PriorityFeeManager.MIN_FEE, initialFee);
+    this.baseFee = Math.max(initialFee);
   }
 
   private getRandomizedFee(): number {
@@ -26,7 +24,6 @@ export class PriorityFeeManager {
     this.consecutiveFailures++;
     this.baseFee = Math.min(
       this.baseFee + PriorityFeeManager.FEE_INCREASE * this.consecutiveFailures,
-      PriorityFeeManager.MAX_FEE
     );
   }
 
@@ -34,8 +31,7 @@ export class PriorityFeeManager {
     if (this.consecutiveFailures > 0) {
       this.consecutiveFailures = 0;
       this.baseFee = Math.max(
-        this.baseFee - PriorityFeeManager.FEE_INCREASE,
-        PriorityFeeManager.MIN_FEE
+        this.baseFee - PriorityFeeManager.FEE_INCREASE
       );
     }
   }

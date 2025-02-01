@@ -23,6 +23,7 @@ export const CONFIG = {
   targetVolume: Number(process.env.TARGET_VOLUME) || 1,
   buyAmount: { min: buyMin, max: buyMax },
   sellAmount: { min: sellMinHuman, max: sellMaxHuman },
+  solLimit: Number(process.env.SOL_LIMIT) || 1,
   timeInterval: Number(process.env.TIME_INTERVAL) || 15,
   slippage: Number(process.env.SLIPPAGE) || 0.01,
   compute: Number(process.env.COMPUTE) || 120000,
