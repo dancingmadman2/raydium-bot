@@ -20,7 +20,7 @@
     "npm-check-updates": "^16.14.11"
   },
   "scripts": {
-    "start": "node",
+    "start": "ts-node volumeBot.ts",
     "build": "tsc",
     "clean": "tsc --build --clean",
     "dev": "ts-node"
