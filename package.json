@@ -13,7 +13,8 @@
     "dotenv": "^16.4.5",
     "jsonfile": "^6.1.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "bn.js": "^5.2.1"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.5",
@@ -23,6 +24,10 @@
     "start": "ts-node volumeBot.ts",
     "build": "tsc",
     "clean": "tsc --build --clean",
-    "dev": "ts-node"
+    "dev": "ts-node",
+    "postinstall": "npm run build || echo 'Build failed, but continuing anyway'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

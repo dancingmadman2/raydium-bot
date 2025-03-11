@@ -11,6 +11,7 @@ import { Logger } from './src/logger';
 import { TradeExecutor } from './src/tradeExecutor';
 import { BotConfig } from './src/botConfig';
 import { BalanceManager } from './src/balanceManager';
+import './src/healthcheck';
 
 class TradingBot {
   private volumeTracker: VolumeTracker | null;

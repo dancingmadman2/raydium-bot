@@ -1,1 +1,1 @@
-web: npm run dev -- volumeBot.ts 
+web: npm start 
