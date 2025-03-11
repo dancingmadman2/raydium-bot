@@ -27,7 +27,7 @@ export const CONFIG = {
   timeInterval: Number(process.env.TIME_INTERVAL) || 15,
   slippage: Number(process.env.SLIPPAGE) || 0.01,
   compute: Number(process.env.COMPUTE) || 120000,
-  priorityFee: Number(process.env.PRIORITY_FEE) || 100000,
+  priorityFee: Number(process.env.PRIORITY_FEE) || 0,
   sweepMode: process.env.SWEEP_MODE === 'true',
   sweepThreshold: Number(process.env.SWEEP_THRESHOLD) || 0.1,
 };
