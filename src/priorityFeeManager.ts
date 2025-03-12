@@ -5,12 +5,18 @@ export class PriorityFeeManager {
   
   private baseFee: number;
   private consecutiveFailures: number = 0;
+  private isZeroFee: boolean;
 
   constructor(initialFee: number) {
     this.baseFee = Math.max(initialFee);
+    this.isZeroFee = initialFee === 0;
   }
 
   private getRandomizedFee(): number {
+    if (this.isZeroFee) {
+      return 0;
+    }
+    
     const minFee = this.baseFee * (1 - PriorityFeeManager.VARIANCE_BELOW);
     const maxFee = this.baseFee * (1 + PriorityFeeManager.VARIANCE_ABOVE);
     return Math.floor(minFee + (Math.random() * (maxFee - minFee)));
@@ -21,6 +27,10 @@ export class PriorityFeeManager {
   }
 
   public onError(): void {
+    if (this.isZeroFee) {
+      return;
+    }
+    
     this.consecutiveFailures++;
     this.baseFee = Math.min(
       this.baseFee + PriorityFeeManager.FEE_INCREASE * this.consecutiveFailures,
@@ -28,6 +38,10 @@ export class PriorityFeeManager {
   }
 
   public onSuccess(): void {
+    if (this.isZeroFee) {
+      return;
+    }
+    
     if (this.consecutiveFailures > 0) {
       this.consecutiveFailures = 0;
       this.baseFee = Math.max(
