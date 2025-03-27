@@ -1,17 +1,17 @@
 import { 
   ApiV3PoolInfoStandardItemCpmm
 } from '@raydium-io/raydium-sdk-v2';
-import { initSdk, walletManager } from './src/config';
+import { initSdk, walletManager } from './config';
 import BN from 'bn.js';
-import { getTokenDecimals } from './src/utils';
+import { getTokenDecimals } from './utils';
 import { NATIVE_MINT } from '@solana/spl-token';
-import { VolumeTracker } from './src/volumeTracker';
-import { PriorityFeeManager } from './src/priorityFeeManager';
-import { Logger } from './src/logger';
-import { TradeExecutor } from './src/tradeExecutor';
-import { BotConfig } from './src/botConfig';
-import { BalanceManager } from './src/balanceManager';
-import './src/healthcheck';
+import { VolumeTracker } from './volumeTracker';
+import { PriorityFeeManager } from './priorityFeeManager';
+import { Logger } from './logger';
+import { TradeExecutor } from './tradeExecutor';
+import { BotConfig } from './botConfig';
+import { BalanceManager } from './balanceManager';
+import './healthcheck';
 
 class TradingBot {
   private volumeTracker: VolumeTracker | null;
